@@ -381,7 +381,7 @@ const FB={
 const db=getFirestore(initializeApp(FB));
 
 /* ════ 구글 시트 ID (KID용으로 교체하세요) ════ */
-const SHEET_ID='1SbfcYYbLYh9NlkhDQL6GHqgceYtbojufJ954Q5u1pzM';
+const SHEET_ID='1V6R9vc1oIaiJH61oK-t0bdOVCSSTNADDELd_SVQtCsk';
 
 const SHEETS=[{name:'매장재고',label:'매장'},{name:'지2창고',label:'지하2층'},{name:'지3창고',label:'지하3층'},{name:'지4창고',label:'지하4층'},{name:'외부창고',label:'외부창고'}];
 const RC={점장:'#1565c0',시니어:'#6a1b9a',주니어:'#2e7d32',파트:'#e65100'};
