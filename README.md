@@ -389,7 +389,7 @@ const db=getFirestore(initializeApp(FB));
 /* ════ 구글 시트 ID (KID용으로 교체하세요) ════ */
 const SHEET_ID='1V6R9vc1oIaiJH61oK-t0bdOVCSSTNADDELd_SVQtCsk';
 
-const SHEETS=[{name:'매장재고',label:'매장'},{name:'지2창고',label:'지하2층'},{name:'지3창고',label:'지하3층'},{name:'지4창고',label:'지하4층'},{name:'외부창고',label:'외부창고'}];
+const SHEETS=[{name:'매장',label:'매장',gid:'0'},{name:'지하2층',label:'지하2층',gid:'1121845611'},{name:'지하3층',label:'지하3층',gid:'167197888'},{name:'지하4층',label:'지하4층',gid:'941653581'},{name:'외부',label:'외부창고',gid:'1316770854'}];
 const RC={점장:'#1565c0',시니어:'#6a1b9a',주니어:'#2e7d32',파트:'#e65100'};
 const EC={store:'#c62828',task:'#1565c0',meet:'#7b1fa2',stock:'#2e7d32',clean:'#e65100',etc:'#5d4037'};
 const EL={store:'매장',task:'업무',meet:'미팅',stock:'재고',clean:'청소',etc:'기타'};
@@ -837,10 +837,10 @@ window.removeOff=function(sid,di){DB.off[sid].splice(di,1);saveMain();renderOff(
 window.addStaff=function(){const role=document.getElementById('new-role').value,name=document.getElementById('new-name').value.trim();if(!name)return;DB.staff.push({id:'s'+Date.now(),role,name});document.getElementById('new-name').value='';saveMain();renderOff();};
 window.removeStaff=function(id){if(!confirm('직원을 삭제하시겠습니까?'))return;DB.staff=DB.staff.filter(s=>s.id!==id);delete DB.off[id];saveMain();renderOff();};
 
-function sheetUrl(n){return`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(n)}`;}
+function sheetUrl(gid){return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${encodeURIComponent(gid)}`;}
 function parseCSV(csv){return csv.trim().split('\n').map(line=>{const cells=[];let cur='',inQ=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}else if(c===','&&!inQ){cells.push(cur.trim());cur='';}else cur+=c;}cells.push(cur.trim());return cells;});}
 function nowStr(){const n=new Date();return n.getFullYear()+'.'+(n.getMonth()+1)+'.'+n.getDate()+' '+p2(n.getHours())+':'+p2(n.getMinutes());}
-async function loadSheet(sn){try{const r=await fetch(sheetUrl(sn));const csv=await r.text();const rows=parseCSV(csv);if(rows.length<1){INV[sn]={headers:[],rows:[],loadedAt:nowStr()};return;}INV[sn]={headers:rows[0],rows:rows.slice(1).filter(r=>r.some(c=>c)),loadedAt:nowStr()};}catch(e){INV[sn]={headers:[],rows:[],loadedAt:'',error:true};}}
+async function loadSheet(sn){try{const sh=SHEETS.find(s=>s.name===sn);if(!sh)throw new Error('시트 설정 없음: '+sn);const r=await fetch(sheetUrl(sh.gid));const csv=await r.text();const rows=parseCSV(csv);if(rows.length<1){INV[sn]={headers:[],rows:[],loadedAt:nowStr()};return;}INV[sn]={headers:rows[0],rows:rows.slice(1).filter(r=>r.some(c=>c)),loadedAt:nowStr()};}catch(e){INV[sn]={headers:[],rows:[],loadedAt:'',error:true};}}
 async function loadAllSheets(){await Promise.all(SHEETS.map(s=>loadSheet(s.name)));}
 function renderInvPanel(){
   document.getElementById('inv-tabs').innerHTML=SHEETS.map((s,i)=>`<div class="inv-tab ${i===curInvSheet?'active':''}" onclick="switchInvSheet(${i})">${s.label}</div>`).join('');
