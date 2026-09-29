@@ -127,9 +127,12 @@ input:focus,select:focus{border-color:var(--text)}
 .add-off-row input{flex:1;margin:0}
 
 /* INVENTORY */
-.inv-search-wrap{position:relative;margin-bottom:10px}
-.inv-search-wrap input{padding-left:34px;margin:0}
+.inv-search-wrap{display:flex;gap:6px;margin-bottom:10px}
+.inv-search-input-wrap{position:relative;flex:1;min-width:0}
+.inv-search-input-wrap input{padding-left:34px;margin:0}
 .inv-s-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none}
+.inv-search-btn{flex-shrink:0;padding:8px 16px;border-radius:var(--radius-sm);border:0.5px solid var(--text);background:var(--text);color:var(--bg);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.inv-search-btn:hover{opacity:.85}
 .inv-tabs{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap}
 .inv-tab{padding:5px 14px;border-radius:14px;font-size:11px;font-weight:500;cursor:pointer;border:0.5px solid var(--border);background:var(--bg);color:var(--text2);transition:all .15s}
 .inv-tab.active{background:var(--text);color:var(--bg);border-color:var(--text)}
@@ -354,8 +357,11 @@ input:focus,select:focus{border-color:var(--text)}
   <!-- 재고 관리 -->
   <div id="panel-inventory" class="panel">
     <div class="inv-search-wrap">
-      <span class="inv-s-icon">🔍</span>
-      <input type="text" id="inv-search" placeholder="전체 창고 검색 — 품번, 컬러, 사이즈..." oninput="searchInv()">
+      <div class="inv-search-input-wrap">
+        <span class="inv-s-icon">🔍</span>
+        <input type="text" id="inv-search" placeholder="전체 창고 검색 — 품번, 컬러, 사이즈..." onkeydown="if(event.key==='Enter'){event.preventDefault();searchInv();}">
+      </div>
+      <button class="inv-search-btn" onclick="searchInv()">검색</button>
     </div>
     <div id="inv-search-results"></div>
     <div class="inv-tabs" id="inv-tabs"></div>
